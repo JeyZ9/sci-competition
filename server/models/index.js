@@ -1,7 +1,12 @@
 import sequelize from "./db.js";
 import Sequelize from "sequelize"
+
+import Activity from "./activity.model.js";
 import User from "./user.model.js"
-import Role from "./role.model.js"
+import Admin from "./admin.model.js";
+import Judge from "./judge.model.js";
+import Teacher from "./teacher.model.js";
+import VerificationToken from "./verificationToken.model.js";
 
 const db = {};
 
@@ -11,19 +16,14 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.User = User;
-db.Role = Role;
+db.Activity = Activity;
+db.Admin = Admin;
+db.Teacher = Teacher;
+db.Judge = Judge;
+db.VerificationToken = VerificationToken;
 
 // Association
-db.User.belongsToMany(db.Role, {
-  through: "user_roles",
-  foreignKey: "userId",
-  otherKey: "roleId",
-});
-
-db.Role.belongsToMany(db.User, {
-  through: "user_roles",
-  foreignKey: "roleId",
-  otherKey: "userId",
-});
+db.VerificationToken.belongTo(db.User, {foreignKey: "userId"});
+db.User.belongTo(db.VerificationToken, { foreignKey: "userId" });
 
 export default db;

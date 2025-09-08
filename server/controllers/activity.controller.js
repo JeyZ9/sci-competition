@@ -159,7 +159,7 @@ activityController.delete = async (req, res) => {
       res.status(500).send({
         message:
           err.message ||
-          `Something error while "Deleted by id: ${id}" the restaurant`,
+          `Something error while "Deleted by id: ${id}" the Activity`,
       });
     });
 }
