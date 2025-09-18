@@ -1,6 +1,7 @@
 import db from "../models/index.js";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../utils/email.js";
+import path from "path";
 
 const User = db.User;
 // const Admin = db.Admin;
@@ -94,8 +95,57 @@ const signUp = async (req, res) => {
   }
 }
 
-const authController = {
-  signUp
+const verifyEmail = async (req, res) => {
+  const { token } = req.params;
+  if(!token){
+    return res.status(400).send({
+      message: "Token is missing!"
+    });
+  }
+
+  try{
+    const verificationToken = await db.VerificationToken.findOne({
+      where: { token:token }
+    });
+    if(!verificationToken){
+      return res.status(404).send({
+        message: "Invalid verification token"
+      })
+    }
+
+    // Check if token is expired
+    if(new Date() > verificationToken.expiredAt){
+      await verificationToken.destroy();
+      return res.status(400).send({
+        message: "Verification token has expired!"
+      });
+    }
+
+    const user = await User.findByPk(verificationToken.userId);
+    if(!user){
+      return res.status(400).send({
+        message: "User not found!"
+      });
+    }
+
+    await user.update({isVerified: true});
+    await verificationToken.destroy();
+
+    // return web view
+    const htmlPath = path.join(process.cwd(), "views", "verification-success.html");
+    console.log(htmlPath);
+    res.sendFile(htmlPath);
+  }catch(err) {
+    console.log(err)
+    res.status(500).send({
+      message: "Some error occurredwhile verifying the user"
+    })
+  }
 }
+
+const authController = {
+  signUp,
+  verifyEmail,
+};
 
 export default authController;
