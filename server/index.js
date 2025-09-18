@@ -7,6 +7,7 @@ import cors from "cors"
 const app = express();
 const PORT = process.env.PORT || 3000;
 const FRONT_END_URL = process.env.FRONT_END_URL;
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
@@ -15,12 +16,21 @@ app.use(express.urlencoded({ extended: true}));
 //     return res.send("Hello World!");
 // });
 
-db.sequelize.sync({ force: false }).then(() => {
-  console.log("create table user_roles");
-});
+// db
+const initDatabase = async () => {
+  try {
+    await db.sequelize.authenticate();
+    console.log("database connection established successfully");
+    if (NODE_ENV === "development") {
+      await db.sequelize.sync({ after: true });
+      console.log("database Synced in development");
+    }
+  } catch (error) {
+    console.log("Unable to connect to database", error);
+  }
+};
 
-app.use("/api/v1/activity", activityRouter);
-app.use("/api/v1/auth", authRouter);
+initDatabase();
 
 app.use(
   cors({
@@ -29,6 +39,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Athorization", "x-access-token"],
   })
 );
+
+
+app.use("/api/v1/activity", activityRouter);
+app.use("/api/v1/auth", authRouter);
 
 app.listen(PORT, () => {
     console.log("Listening to http://localhost:" + PORT);

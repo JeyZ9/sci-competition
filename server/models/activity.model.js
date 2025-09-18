@@ -10,7 +10,7 @@ const Activity = sequelize.define("activity", {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
-    trim: true
+    trim: true,
   },
   description: {
     type: DataTypes.STRING,
@@ -58,8 +58,8 @@ const Activity = sequelize.define("activity", {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isEmail: true
-    }
+      isEmail: true,
+    },
     // match: [
     //   /^[^\s@]+@[^\s@]+\.[^\s@]{2,3}$/,
     // ]
@@ -67,16 +67,16 @@ const Activity = sequelize.define("activity", {
   status: {
     type: DataTypes.ENUM("draft", "open", "closed", "in_progress", "complated"),
     allowNull: false,
-    default: "draft"
+    default: "draft",
   },
 });
 
 Activity.sync({ force: false })
-.then(() => {
+  .then(() => {
     console.log("Table created or already exists");
-})
-.catch((error) => {
+  })
+  .catch((error) => {
     console.error("Error createing table", error);
-});
+  });
 
 export default Activity;

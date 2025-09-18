@@ -1,7 +1,7 @@
-import User from "./user.model";
+import User from "./user.model.js";
 
 const Admin = User.init(
-    {},
+  {},
   {
     scopes: {
       defaultScope: {
@@ -12,11 +12,11 @@ const Admin = User.init(
     },
   },
   {
-    hook: {
-        befaultCreate: (admin) => {
-          admin.type = "admin";
-        },
-    }
+    hooks: {
+      beforeCreate: (admin) => {
+        admin.type = "admin";
+      },
+    },
   }
 );
 

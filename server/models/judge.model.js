@@ -1,7 +1,7 @@
-import User from "./user.model";
+import User from "./user.model.js";
 
 const Judge = User.init(
-    {},
+  {},
   {
     scopes: {
       defaultScope: {
@@ -12,11 +12,11 @@ const Judge = User.init(
     },
   },
   {
-    hook: {
-        befaultCreate: (judge) => {
-          judge.type = "judge";
-        },
-    }
+    hooks: {
+      beforeCreate: (judge) => {
+        judge.type = "judge";
+      },
+    },
   }
 );
 

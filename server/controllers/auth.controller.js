@@ -1,7 +1,6 @@
 import db from "../models/index.js";
-import config from "../config/auth.config.js"
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import { sendVerificationEmail } from "../utils/email.js";
 
 const User = db.User;
 // const Admin = db.Admin;
@@ -30,7 +29,7 @@ const signUp = async (req, res) => {
     }
 
     // Addition validatetion
-    if(type === "teacher" && (school || !phone)){
+    if(type === "teacher" && (!school || !phone)){
       return res.status(400).send({message: "school and phone are required for teacher!"});
     }
 
@@ -48,6 +47,7 @@ const signUp = async (req, res) => {
       email,
       password,
       type,
+      isVerified:false
     }
 
     if(type === "teacher") {
@@ -69,10 +69,10 @@ const signUp = async (req, res) => {
           userId: user.id,
           expiredAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24h
         });
-
-        
+        console.log("Verification token created:", verification);
+        await sendVerificationEmail(user.email, token, user.name);
       }catch(err){
-
+        console.log("Error sending verifycation email", err);
       }
     }
 
@@ -89,6 +89,13 @@ const signUp = async (req, res) => {
       }
     })
   } catch(err) {
-    return res.status(500).send({message: err.message});
+    console.log(err);
+    return res.status(500).send({message: err});
   }
 }
+
+const authController = {
+  signUp
+}
+
+export default authController;
