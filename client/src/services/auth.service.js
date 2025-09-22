@@ -16,7 +16,7 @@ const login = async (user) => {
   }
 
   TokenService.setUser(response.data);
-  return response.data;
+  return response;
 };
 
 const logout = () => {
