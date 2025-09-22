@@ -2,6 +2,8 @@ import db from "../models/index.js";
 import crypto from "crypto";
 import { sendVerificationEmail } from "../utils/email.js";
 import path from "path";
+import authConfig from "../config/auth.config.js"
+import jwt from "jsonwebtoken";
 
 const User = db.User;
 // const Admin = db.Admin;
@@ -143,8 +145,80 @@ const verifyEmail = async (req, res) => {
   }
 }
 
+const signIn = async (req, res) => {
+  try{
+
+    const { email, password } = req.body;
+  
+    if(!email || !password) {
+      return res.status(400).send({
+        message: "Email and password are require!"
+      });
+    }
+  
+    const user = await User.findOne({where: {email}});
+  
+    if(!user){
+      return res.status(404).send({
+        message: "User not found!"
+      });
+    }
+  
+    const passwordIsvalid = await user.comparePassword(password);
+    if(!passwordIsvalid){
+      return res.status(401).send({
+        message: "Invalid password"
+      });
+    }
+  
+    if(user.type === "teacher" && !user.isVerified){
+      return res.status(403).send({
+        message: "Please verify your email to activate your account!"
+      });
+    }
+  
+    const token = jwt.sign({id: user.id}, authConfig.secret, {
+      expiresIn: 24 * 60 * 60 * 1000
+    });
+  
+    // const userData = {
+    //   id: user.id,
+    //   name: user.name,
+    //   mail: user.email,
+    //   type: user.type,
+    // };
+  
+    // if(user.type === "teacher"){
+    //   userData.phone = user.phone;
+    //   userData.school = user.school;
+    //   userData.isVerified = user.isVerified;
+    // }
+  
+    return res.status(200).send({
+      message: "Login successfully",
+      // user: userData,
+      user: {
+        id: user.id,
+        name: user.name,
+        mail: user.email,
+        type: user.type,
+        ...(user.type === "teacher" && {
+          phone: user.phone,
+          school: user.school,
+          isVerified: user.isVerified,
+        }),
+      },
+      token: token,
+    });
+  }catch(err) {
+    console.log(err);
+    return res.status(500).send({message: err})
+  }
+}
+
 const authController = {
   signUp,
+  signIn,
   verifyEmail,
 };
 

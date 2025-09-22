@@ -6,7 +6,7 @@ import authController from "../controllers/auth.controller.js";
 router.post("/signup", authController.signUp);
 
 // POST: http://localhost:5000/api/v1/login
-// router.post("/login", authController.login);
+router.post("/signin", authController.signIn);
 
 // GET: http://localhost:3000/api/v1/auth/verify/:token
 router.get("/verify/:token", authController.verifyEmail);
