@@ -37,11 +37,11 @@ const User = sequelize.define(
     },
     school: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
     },
   },
   {

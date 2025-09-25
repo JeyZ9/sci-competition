@@ -2,6 +2,8 @@ import { createBrowserRouter } from "react-router";
 import { MainLayout } from "../layout/MainLayout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import AddActivity from "../pages/AddActivity";
+import Activity from "../pages/Activity";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +17,14 @@ const router = createBrowserRouter([
             {
                 path: "/login",
                 element: <Login />
+            },
+            {
+                path: "/activity",
+                element: <Activity />
+            },
+            {
+                path: "/add-activity",
+                element: <AddActivity />
             }
         ]
     }

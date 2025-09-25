@@ -3,7 +3,6 @@ import AuthService from '../services/auth.service';
 import { useAuthContext } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router';
 import Swal from "sweetalert2";
-import axios from 'axios';
 
 
 const Login = () => {
@@ -23,37 +22,36 @@ const Login = () => {
 
     useEffect(() => {
         if (user) {
-        navigate("/");
+        // navigate("/");
         }
     }, [user]);
 
-    const handleOnSubmit = async (e) => {
-        e.preventDefault();
+    const handleOnClick = async () => {
         try {
             const response = await AuthService.login(login);
             // const response = await axios.post("http://localhost:3000/api/v1/auth/signin", login)
             console.log(response);
-            if (response?.token) {
+            if (response?.status === 200) {
             Swal.fire({
                 icon: "success",
                 title: "Login successful!",
             });
 
-            localStorage.setItem("token", response.token);
+            // localStorage.setItem("token", response.token);
 
             setLogin({
                 email: "",
                 password: "",
             });
-            loginFn(login);
+            loginFn(response.data);
             }
         } catch (error) {
-            console.log(error);
-        Swal.fire({
-          icon: "error",
-          title: "Login failed!",
-          text: "Invalid email or password",
-        });
+          console.log(error);
+          Swal.fire({
+            icon: "error",
+            title: "Login failed!",
+            text: "Invalid email or password",
+          });
         }
     }
 
@@ -110,7 +108,7 @@ const Login = () => {
             <div className="card-actions justify-end">
               <button
                 type="submit"
-                onClick={(e) => handleOnSubmit(e)}
+                onClick={handleOnClick}
                 className="btn btn-primary w-full"
               >
                 Login

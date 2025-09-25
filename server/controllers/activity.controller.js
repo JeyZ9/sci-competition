@@ -68,7 +68,7 @@ activityController.getById = async(req, res) => {
   await Activity.findOne({where: {id}}).then((data) => {
     res.send(data);
   }).then((err) => {
-    res.status(404).send({message: "Activity not found by id: " + id});
+    res.status(404).send({message: err.message || "Activity not found by id: " + id});
   })
 }
 
