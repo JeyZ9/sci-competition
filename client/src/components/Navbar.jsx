@@ -1,6 +1,13 @@
 import React from "react";
+import ActivityService from "../services/activity.service";
+import { useAuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
+  const { user, logout } = useAuthContext();
+
+  // const handleLogout = () => {
+  //   logout()
+  // }
   return (
     <>
       <div className="navbar bg-base-100 shadow-sm">
@@ -39,6 +46,13 @@ const Navbar = () => {
               </li>
               <li>
                 <a href="/add-activity">add activity</a>
+              </li>
+              <li>
+                {user ?   
+                  (<button onClick={() => logout()}>log out</button>)
+                  :
+                  (<a href="/login">login</a>)
+                }
               </li>
             </ul>
           </div>

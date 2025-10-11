@@ -1,25 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ActivityService from "../services/activity.service";
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
-const AddActivity = () => {
-  const [event, setEvent] = useState({
-    name: "",
-    description: "",
-    type: "",
-    level: "",
-    team_size: "",
-    date: "",
-    location: "",
-    reg_open: "",
-    reg_close: "",
-    contact_name: "",
-    contact_email: "",
-    contact_phone: "",
-    status: "draft",
-  });
+const EditActivity = () => {
+  const [event, setEvent] = useState({});
 
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,15 +14,27 @@ const AddActivity = () => {
     setEvent({ ...event, [name]: value });
   };
 
+  useEffect(() => {
+    const fetchItem = async () => {
+        const response = await ActivityService.showAllActivityDetailsById(id);
+        if(response.status === 200) {
+            setEvent(response.data);
+        }
+        return response;
+    }
+
+    fetchItem();
+  }, [id])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitted event:", event);
-    const response = await ActivityService.addActivity(event);
+    const response = await ActivityService.updateActivity(id, event);
     console.log(response)
     if(response.status === 200) {
        Swal.fire({
           icon: "success",
-          title: "Add activity successful!",
+          title: "Update activity successful!",
         });
 
         setEvent({
@@ -51,7 +50,7 @@ const AddActivity = () => {
           contact_name: "",
           contact_email: "",
           contact_phone: "",
-          status: "draft",
+          status: "",
         });
         navigate("/");
     }
@@ -60,7 +59,7 @@ const AddActivity = () => {
   return (
     <div className="flex justify-center">
       <form onSubmit={handleSubmit} className="card w-96 bg-base-100 shadow-xl mt-10 p-5 space-y-3">
-        <h2 className="text-xl font-bold text-center">Create Activity</h2>
+        <h2 className="text-xl font-bold text-center">Edit Activity</h2>
 
         <input type="text" name="name" placeholder="Event Name" value={event.name} onChange={handleChange} className="input input-bordered w-full" />
         <textarea name="description" placeholder="Description" value={event.description} onChange={handleChange} className="textarea textarea-bordered w-full" />
@@ -90,4 +89,4 @@ const AddActivity = () => {
   );
 };
 
-export default AddActivity;
+export default EditActivity;

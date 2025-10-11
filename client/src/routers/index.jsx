@@ -4,6 +4,8 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import AddActivity from "../pages/AddActivity";
 import Activity from "../pages/Activity";
+import Register from "../pages/Register";
+import EditActivity from "../pages/EditActivity";
 
 const router = createBrowserRouter([
     {
@@ -19,8 +21,16 @@ const router = createBrowserRouter([
                 element: <Login />
             },
             {
+                path: "/register",
+                element: <Register />
+            },
+            {
                 path: "/activity",
                 element: <Activity />
+            },
+            {
+                path: "/update/:id",
+                element: <EditActivity />
             },
             {
                 path: "/add-activity",

@@ -22,22 +22,18 @@ const Login = () => {
 
     useEffect(() => {
         if (user) {
-        // navigate("/");
+          navigate("/");
         }
     }, [user]);
 
     const handleOnClick = async () => {
         try {
             const response = await AuthService.login(login);
-            // const response = await axios.post("http://localhost:3000/api/v1/auth/signin", login)
-            console.log(response);
             if (response?.status === 200) {
             Swal.fire({
                 icon: "success",
                 title: "Login successful!",
             });
-
-            // localStorage.setItem("token", response.token);
 
             setLogin({
                 email: "",
@@ -105,7 +101,7 @@ const Login = () => {
                 />
               </label>
             </div>
-            <div className="card-actions justify-end">
+            <div className="card-actions justify-center">
               <button
                 type="submit"
                 onClick={handleOnClick}
@@ -113,6 +109,10 @@ const Login = () => {
               >
                 Login
               </button>
+              <div className='flex gap-2 justify-center items-center text-xs'>
+                <p>Don't havev an account? </p>
+                <a href="/register" className='hover:text-blue-400 hover:border-b-1 delay-150 duration-150 ease-in-out'>Register here</a>
+              </div>
             </div>
           </div>
         </div>
