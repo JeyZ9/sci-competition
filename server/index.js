@@ -34,7 +34,7 @@ initDatabase();
 
 app.use(
   cors({
-    oring: ["http://localhost:5173", "127.0.0.1:5173", FRONT_END_URL],
+    oring: ["http://localhost:5173", "http://127.0.0.1:5173", FRONT_END_URL],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Athorization", "x-access-token"],
   })
